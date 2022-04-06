@@ -400,5 +400,6 @@ async def _gui_async() -> None:
 
 def gui() -> None:
     """Start the GUI."""
+    print("hi there")
     set_logging_defaults()
     anyio.run(_gui_async)

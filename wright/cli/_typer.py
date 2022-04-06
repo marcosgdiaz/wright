@@ -120,6 +120,6 @@ def gui() -> None:
     """Show the GUI."""
     # We import inside this function to avoid the dependency for the
     # CLI-only use case.
-    from ..gui import gui as _gui  # pylint: disable=import-outside-toplevel
+    from ..gui2 import gui as _gui  # pylint: disable=import-outside-toplevel
 
     _gui()

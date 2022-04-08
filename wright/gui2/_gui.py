@@ -1,20 +1,30 @@
 import asyncio
 import sys
 
+import anyio
+import qasync
 from PyQt5.QtWidgets import QApplication
-from qasync import QEventLoop
 
+from ..logging import set_logging_defaults
 from .widgets import MainWidget
+
+
+async def _show_main_window() -> None:
+    async with anyio.create_task_group() as tg:
+        main_widget = MainWidget(tg)
+        main_widget.setWindowTitle("Shipyard")
+        main_widget.show()
+        tg.start_soon(main_widget.waitClosed)
 
 
 def gui() -> None:
     """Start the GUI."""
-    print("hi there gui2")
-    # set_logging_defaults()
+    set_logging_defaults()
     app = QApplication(sys.argv)
-    event_loop = QEventLoop(app)
-    asyncio.set_event_loop(event_loop)
-    with event_loop:
-        main_widget = MainWidget()
-        main_widget.show()
-        event_loop.run_forever()
+    # Default behaviour is to exit (like `sys.exit`) immediately.
+    # We don't want that. We want to close the event loop gracefully.
+    app.setQuitOnLastWindowClosed(False)
+
+    loop = qasync.QEventLoop(app)
+    asyncio.set_event_loop(loop)
+    loop.run_until_complete(_show_main_window())

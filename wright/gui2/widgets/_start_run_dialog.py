@@ -3,8 +3,8 @@ from typing import Optional
 from PyQt5.QtCore import QTimer
 from PyQt5.QtWidgets import QDialog, QPlainTextEdit, QPushButton, QVBoxLayout, QWidget
 
-from ..models import RunSettings, StepSettings
-from ._run_settings_widget import RunSettingsWidget
+from ..models import RunPlan
+from ._run_plan_widget import RunPlanWidget
 
 
 class StartRunDialog(QDialog):
@@ -12,11 +12,12 @@ class StartRunDialog(QDialog):
 
     def __init__(self, parent: Optional[QWidget] = None) -> None:
         super().__init__(parent)
+        self.setWindowTitle("Start run")
         self._layout = QVBoxLayout()
         self.setLayout(self._layout)
 
-        self._run_settings = RunSettingsWidget(self)
-        self._layout.addWidget(self._run_settings)
+        self._run_plan_widget = RunPlanWidget(self)
+        self._layout.addWidget(self._run_plan_widget)
 
         ### Messages
         self._messages = QPlainTextEdit(self)
@@ -32,6 +33,7 @@ class StartRunDialog(QDialog):
         self._start_run_button = QPushButton(self)
         self._start_run_button.setMinimumHeight(50)
         self._start_run_button.setText("Start run")
+        self._start_run_button.setStyleSheet("background: blue;")
         self._layout.addWidget(self._start_run_button)
 
         ### Connections
@@ -46,8 +48,8 @@ class StartRunDialog(QDialog):
         # Initial validation (to avoid 1 second delay before the timer kicks in)
         self._validate()
 
-    def model(self) -> RunSettings:
-        return self._run_settings.model()
+    def model(self) -> RunPlan:
+        return self._run_plan_widget.model()
 
     def _validate(self) -> None:
         try:
@@ -64,5 +66,6 @@ class StartRunDialog(QDialog):
             self._messages.setEnabled(False)
             self._start_run_button.setEnabled(True)
 
-    def setStepSettings(self, step_settings: StepSettings) -> None:
-        self._run_settings.setStepSettings(step_settings)
+    def setRunPlan(self, run_plan: RunPlan) -> None:
+        self._run_plan_widget.setRunPlan(run_plan)
+        self._validate()

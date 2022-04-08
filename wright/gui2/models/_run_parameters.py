@@ -9,8 +9,9 @@ from ._low_level_config import LowLevelConfig
 from ._reset_params import ResetParams
 
 
-class StepSettings(FrozenModel):
+class RunParameters(FrozenModel):
     device_type: DeviceType
+    device_version: str
     hostname: str
     swu_file: FilePath
     branding: Branding
@@ -28,6 +29,7 @@ class StepSettings(FrozenModel):
         low_level_config = LowLevelConfig.try_from_config_file()
         return DeviceDescription.from_raw_args(
             device_type=self.device_type,
+            device_version=self.device_version,
             hostname=self.hostname,
             tty=low_level_config.tty,
             jtag_usb_serial=low_level_config.jtag_usb_serial,

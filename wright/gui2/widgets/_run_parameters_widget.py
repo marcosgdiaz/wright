@@ -12,11 +12,11 @@ from PyQt5.QtWidgets import (
 
 from ...config.branding import Branding
 from ...device import DeviceType
-from ..models import StepSettings
+from ..models import RunParameters
 
 
-class StepsSettingsWidget(QWidget):
-    """Setting of the steps in a run."""
+class RunParametersWidget(QWidget):
+    """Parameters for a run."""
 
     def __init__(self, parent: Optional[QWidget] = None) -> None:
         super().__init__(parent)
@@ -25,7 +25,7 @@ class StepsSettingsWidget(QWidget):
 
         ### Basic
         self._basic = QGroupBox(self)
-        self._basic.setTitle("Basic settings")
+        self._basic.setTitle("Basic parameters")
         self._layout.addWidget(self._basic)
         self._basic_layout = QFormLayout()
         self._basic.setLayout(self._basic_layout)
@@ -38,7 +38,7 @@ class StepsSettingsWidget(QWidget):
 
         ### Advanced
         self._advanced = QGroupBox(self)
-        self._advanced.setTitle("Advanced settings")
+        self._advanced.setTitle("Advanced parameters")
         self._layout.addWidget(self._advanced)
         self._advanced_layout = QFormLayout()
         self._advanced.setLayout(self._advanced_layout)
@@ -56,21 +56,21 @@ class StepsSettingsWidget(QWidget):
             self._branding.addItem(key, value)
         self._advanced_layout.addRow("Branding", self._branding)
 
-    def model(self) -> StepSettings:
+    def model(self) -> RunParameters:
         device_type = cast(DeviceType, self._device_type.currentData())
         swu_file = Path(self._swu_file.text())  # TODO: Use device type in placeholder
         branding = cast(Branding, self._branding.currentData())
-        return StepSettings(
+        return RunParameters(
             device_type=device_type,
-            hw_version=self._hw_version.text(),
+            device_version=self._hw_version.text(),
             hostname=self._hostname.text(),
             swu_file=swu_file,
             branding=branding,
         )
 
-    def setModel(self, model: StepSettings) -> None:
+    def setModel(self, model: RunParameters) -> None:
         self._device_type.setCurrentText(model.device_type.name)
-        self._hw_version.setText(model.hw_version)
+        self._hw_version.setText(model.device_version)
         self._hostname.setText(model.hostname)
         self._swu_file.setText(str(model.swu_file))
         self._branding.setCurrentText(model.branding.name)

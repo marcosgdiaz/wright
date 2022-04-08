@@ -137,7 +137,7 @@ async def _start_server(
     communication: "DeviceCommunication",
     logger: Logger,
     *,
-    task_status: TaskStatus = anyio.TASK_STATUS_IGNORED
+    task_status: TaskStatus = anyio.TASK_STATUS_IGNORED,
 ) -> None:
     # Commands that we run when the server runs
     commands: list[str] = []
@@ -151,26 +151,22 @@ async def _start_server(
             "Use an arbitrary FTDI device (no specific serial number specified)"
         )
     if communication.ocd_tcl_port is not None:
-        logger.info(
-            f'Use TCL port number: "{communication.ocd_tcl_port}"'
-        )
+        logger.info(f'Use TCL port number: "{communication.ocd_tcl_port}"')
         commands.append(f"tcl_port {communication.ocd_tcl_port}")
     else:
-        logger.info(
-            "Use default TCL port number (no specific port number specified)"
-        )
+        logger.info("Use default TCL port number (no specific port number specified)")
     # Run the server
     await ocd.run_server(
         _CFG_FILE,
         commands,
         task_status=task_status,
-        logger=logger.getChild("ocd.server")
+        logger=logger.getChild("ocd.server"),
     )
 
 
 async def _power_cycle_usb_ports(*, logger: Optional[Logger] = None) -> None:
     # TODO: Power cycle a specific USB port instead of all of them
-    command = "uhubctl", "--action", "cycle"
+    command = ("uhubctl", "--action", "cycle", "--location", "1")
     await run_process(command, check_rc=True, stdout_logger=logger)
     # Wait a moment for the USB devices to set themselves up
     await anyio.sleep(2)

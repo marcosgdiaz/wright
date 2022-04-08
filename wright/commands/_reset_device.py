@@ -22,11 +22,11 @@ _LOGGER = getLogger(__name__)
 RESET_DEVICE_STATUS_MAP: StatusMap = {
     # TODO: Use a single source of truth: Only define the timeout parameter once.
     # Either here or in the recipes.
-    "prepare": Idle(timedelta(seconds=60), 0),
-    "reset_firmware": Idle(timedelta(seconds=110), 0),
-    "reset_operating_system": Idle(timedelta(seconds=80), 0),
-    "reset_config": Idle(timedelta(seconds=40), 0),
-    "reset_data": Idle(timedelta(seconds=60), 0),
+    "prepare": Idle(expected_duration=timedelta(seconds=60), tries=0),
+    "reset_firmware": Idle(expected_duration=timedelta(seconds=110), tries=0),
+    "reset_operating_system": Idle(expected_duration=timedelta(seconds=100), tries=0),
+    "reset_config": Idle(expected_duration=timedelta(seconds=60), tries=0),
+    "reset_data": Idle(expected_duration=timedelta(seconds=60), tries=0),
 }
 
 
